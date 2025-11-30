@@ -1,0 +1,5 @@
+source,target,type
+Alice,Bob,KNOWS
+Alice,Charlie,KNOWS
+Bob,Diana,KNOWS
+Charlie,Diana,KNOWS

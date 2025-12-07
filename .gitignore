@@ -23,7 +23,7 @@ var/lib/postgresql/
 .pgdata/
 .psql_history
 .pgpass
-.postgres_data
+.postgresql_data
 .pgadmin_data
 
 # Neo4j - local DB data, logs and imports

@@ -4,8 +4,6 @@
 
 MATCH (n) DETACH DELETE n;
 
-
-
 ///////////////////////////////////////////////////////////////////////////
 // MODULE 1 — SOCIAL + BOOK GRAPH
 ///////////////////////////////////////////////////////////////////////////
@@ -297,17 +295,12 @@ RETURN b.title AS book, COUNT(p) AS readers
 ORDER BY readers DESC
 LIMIT 10;
 
-// 6.1.3 — People who read the same books
-MATCH (p1:Person)-[:READ]->(b)<-[:READ]-(p2:Person)
-WHERE p1 <> p2
-RETURN p1.name AS person, b.title AS sharedBook, p2.name AS similarReader;
-
-// 6.1.4 — Book recommendations for Alice
+// 6.1.3 — Book recommendations for Alice
 MATCH (me:Person {name:'Alice'})-[:READ]->(b1)<-[:READ]-(other)-[:READ]->(b2)
 WHERE NOT (me)-[:READ]->(b2)
 RETURN DISTINCT b2.title AS recommendedBook;
 
-// 6.1.5 — Genres each person reads
+// 6.1.3 — Genres each person reads
 MATCH (p:Person)-[:READ]->(:Book)-[:IN_GENRE]->(g:Genre)
 RETURN p.name AS person, COLLECT(DISTINCT g.name) AS genresRead;
 

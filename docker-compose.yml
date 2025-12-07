@@ -32,6 +32,7 @@ services:
       - "5050:80"
     volumes:
       - ./.pgadmin_data:/var/lib/pgadmin
+      - ./setup/sql:/var/lib/pgadmin/storage/admin_admin.com/Scripts
     configs:
       - source: servers.json
         target: /pgadmin4/servers.json

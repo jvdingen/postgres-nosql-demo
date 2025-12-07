@@ -1,14 +1,14 @@
 services:
   postgres:
-    image: postgres:18-trixie
+    image: pgvector/pgvector:0.8.1-pg18-trixie
     container_name: postgres-demo
     volumes:
       - ./.postgresql_data:/var/lib/postgresql/18/docker
-      - ./initdb.d:/docker-entrypoint-initdb.d
+      - ./setup/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
-      POSTGRES_DB: pgdemo #Tochange
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: Admin1234
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: pgdemo
     ports:
       - "5432:5432"
   neo4j:
@@ -21,6 +21,72 @@ services:
     volumes:
       - ./.neo4j:/data/import
       - ./.neo4j_data:/data
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    volumes:
+      - ./.pgadmin_data:/var/lib/pgadmin
+    configs:
+      - source: servers.json
+        target: /pgadmin4/servers.json
+    depends_on:
+      - postgres
+  jupyter:
+    image: jupyter/base-notebook
+    container_name: jupyter
+    restart: always
+    command:
+        bash -c "
+        pip install --no-cache-dir -r /tmp/requirements.txt &&
+        start-notebook.py --NotebookApp.token='' --NotebookApp.password=''
+      "
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./setup/requirements.txt:/tmp/requirements.txt
+      - ./notebooks:/workspace/notebooks
+    working_dir: /workspace
+    depends_on:
+      - postgres
+      - neo4j
+
 volumes:
   .postgresql_data:
   .neo4j_data:
+  .pgadmin_data:
+
+configs:
+  servers.json:
+    content: |
+      {
+        "Servers": {
+          "1": {
+            "Name": "local",
+            "Group": "Servers",
+            "Host": "postgres",
+            "Port": 5432,
+            "MaintenanceDB": "postgres",
+            "Username": "postgres",
+            "DBRestrictionType": "databases",
+            "UseSSHTunnel": 0,
+            "TunnelPort": "22",
+            "TunnelAuthentication": 0,
+            "TunnelPromptPassword": 0,
+            "TunnelKeepAlive": 0,
+            "KerberosAuthentication": false,
+            "ConnectionParameters": {
+                "sslmode": "prefer",
+                "connect_timeout": 10,
+                "sslcert": "<STORAGE_DIR>/.postgresql/postgresql.crt",
+                "sslkey": "<STORAGE_DIR>/.postgresql/postgresql.key"
+            },
+            "Tags": []
+        }
+      }
+      }

@@ -4,7 +4,6 @@ services:
     container_name: postgres-demo
     volumes:
       - ./.postgresql_data:/var/lib/postgresql/18/docker
-      - ./datasets/employees.csv:/var/lib/postgresql/18/docker/employees.csv
       - ./setup/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       POSTGRES_USER: postgres

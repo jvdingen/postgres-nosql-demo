@@ -1,7 +1,0 @@
-openai
-pandas
-numpy
-tiktoken
-psycopg2-binary
-pgvector
-python-dotenv

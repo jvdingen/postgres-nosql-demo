@@ -3,7 +3,6 @@
 -- ============================
 
 -- Clean up previous tables if exist
-DROP TABLE IF EXISTS routes CASCADE;
 DROP TABLE IF EXISTS locations CASCADE;
 
 -- ----------------------------

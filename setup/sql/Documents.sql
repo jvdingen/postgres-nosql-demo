@@ -1,13 +1,10 @@
 -- ============================================================
 -- PostgreSQL Semi-Structured Data Demo
--- JSON, JSONB, and HSTORE in One Story
--- Target: pgdemo database
 -- ============================================================
 
 CREATE EXTENSION IF NOT EXISTS hstore;
 
 DROP TABLE IF EXISTS documents;
-DROP TABLE IF EXISTS kv_properties;
 
 -- ============================================================
 -- 1) Create a table storing JSON, JSONB, and HSTORE together
@@ -16,8 +13,8 @@ DROP TABLE IF EXISTS kv_properties;
 CREATE TABLE documents (
     id          SERIAL PRIMARY KEY,
     title       TEXT,
-    json_raw    JSON,      -- Stored as text, no indexing
-    json_doc    JSONB,     -- Binary, indexable, ideal for document structures
+    json_raw    JSON,             -- Stored as text, no indexing
+    json_doc    JSONB,            -- Binary, indexable, ideal for document structures
     hstore_attributes  HSTORE,    -- Flat key/value metadata
     created_at  TIMESTAMPTZ DEFAULT NOW()
 );
@@ -37,9 +34,9 @@ VALUES
 ),
 (
     'Order Placed',
-    '{"event":"purchase","user":{"id":102,"name":"Bob"},"order":{"items":2,"total":49.90}}',
-    '{"event":"purchase","user":{"id":102,"name":"Bob"},"order":{"items":2,"total":49.90}}',
-    '"event" => "purchase", "items" => "2"'
+    '{"event":"purchase","user":{"id":101,"name":"Alice"},"order":{"items":2,"total":49.90}}',
+    '{"event":"purchase","user":{"id":101,"name":"Alice"},"order":{"items":2,"total":49.90}}',
+    '"event" => "purchase", "items" => "2", "total" => "49.90"'
 ),
 (
     'User Logout',
